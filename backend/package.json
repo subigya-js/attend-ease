@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --exec ts-node server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
