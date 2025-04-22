@@ -1,10 +1,13 @@
 import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
 
+const connectDB = require("./config/connectDB");
+
 dotenv.config();
 
+connectDB();
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
