@@ -3,13 +3,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectDB = async (): Promise<void> => {
+let cachedConnection: typeof mongoose | null = null;
+
+const connectDB = async (): Promise<typeof mongoose> => {
+    if (cachedConnection) {
+        return cachedConnection;
+    }
+
     try {
-        const connect = await mongoose.connect(process.env.MONGO_URL as string);
+        const connection = await mongoose.connect(process.env.MONGO_URL as string);
         console.log("Database connected.");
+        cachedConnection = connection;
+        return connection;
     } catch (error) {
-        console.log("Database connection error:", error);
-        process.exit(1);
+        console.error("Database connection error:", error);
+        throw error;
     }
 }
 
