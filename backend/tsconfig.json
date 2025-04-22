@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["./**/*.ts", "middleware/errorHandler.js"],
+  "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
 }
