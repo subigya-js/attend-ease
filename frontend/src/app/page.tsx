@@ -2,10 +2,32 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
 
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data.message);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(`Failed to fetch data: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(error)
   const handleGetStarted = () => {
     router.push('/login');
   };
