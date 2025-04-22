@@ -15,9 +15,15 @@ app.use(async (req: Request, res: Response, next) => {
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+  res.json({ message: "Hello World" });
 });
 
 app.use(errorHandler);
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 export default app;
