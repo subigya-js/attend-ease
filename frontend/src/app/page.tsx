@@ -6,28 +6,36 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
-
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:3001');
+        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        if (!apiUrl) {
+          throw new Error('API URL is not defined');
+        }
+        console.log('Fetching data from:', apiUrl);
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data.message);
+        console.log('Data from API:', data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError(`Failed to fetch data: ${error instanceof Error ? error.message : String(error)}`);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  console.log(error)
+  console.log(isLoading)
+
+
   const handleGetStarted = () => {
     router.push('/login');
   };
