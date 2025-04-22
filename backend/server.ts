@@ -1,11 +1,10 @@
 import * as dotenv from "dotenv";
-import express from "express";
-import { Request, Response } from "express";
+import express, { Request, Response } from "express";
 
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
