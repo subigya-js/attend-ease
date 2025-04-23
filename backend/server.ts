@@ -1,6 +1,6 @@
 import cors from "cors";
 import * as dotenv from "dotenv";
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import connectDB from "./config/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -8,31 +8,35 @@ dotenv.config();
 
 const app = express();
 
-// Enable CORS for all routes
+// Middleware
 app.use(cors());
-
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    console.error("Database connection error:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
 app.use(express.json());
 
+// Routes
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello World" });
 });
 
+// Error Handler
 app.use(errorHandler);
 
+// Start server only after DB is connected
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log("✅ Database connected");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Failed to connect to database", error);
+    process.exit(1); // Stop server if DB connection fails
+  }
+};
+
+startServer();
 
 export default app;

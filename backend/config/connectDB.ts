@@ -12,7 +12,7 @@ const connectDB = async (): Promise<typeof mongoose> => {
 
     try {
         const connection = await mongoose.connect(process.env.MONGO_URL as string);
-        console.log("Database connected.");
+        console.log("Database connected from connectDB.ts");
         cachedConnection = connection;
         return connection;
     } catch (error) {
