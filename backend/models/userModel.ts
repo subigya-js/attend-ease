@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import { IUser } from "../types/user";
+import { UserType } from "../types/user";
 
-const userSchema: Schema<IUser> = new Schema({
+const userSchema: Schema<UserType> = new Schema({
     name: {
         type: String,
         required: [true, "Please add the user name."],
@@ -21,5 +21,5 @@ const userSchema: Schema<IUser> = new Schema({
         timestamps: true,
     })
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<UserType>("User", userSchema);
 export default User;
