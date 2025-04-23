@@ -1,9 +1,9 @@
-import asyncHandler from 'express-async-handler';
-import User from '../models/userModel';
 import bcrypt from 'bcryptjs';
-import generateToken from '../utils/generateToken';
 import { Request, Response } from 'express';
+import asyncHandler from 'express-async-handler';
 import { JwtPayload } from 'jsonwebtoken';
+import User from '../models/userModel';
+import generateToken from '../utils/generateToken';
 
 interface AuthRequest extends Request {
     user?: JwtPayload;
@@ -101,4 +101,5 @@ const currentUser = asyncHandler(async (req: AuthRequest, res: Response) => {
     });
 });
 
-export { registerUser, loginUser, currentUser };
+export { currentUser, loginUser, registerUser };
+

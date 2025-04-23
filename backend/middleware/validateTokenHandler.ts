@@ -1,15 +1,12 @@
-import * as dotenv from "dotenv";
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 
-dotenv.config();
+const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET || '';
 
-const JWT_SECRET: string = process.env.JWT_SECRET || '';
-
-// if (!JWT_SECRET) {
-//     throw new Error('JWT_SECRET is not defined in the environment variables');
-// }
+if (!ACCESS_TOKEN_SECRET) {
+    console.error('ACCESS_TOKEN_SECRET is not defined in the environment variables');
+}
 
 interface AuthRequest extends Request {
     user?: jwt.JwtPayload;
@@ -43,7 +40,7 @@ const validateToken = asyncHandler(async (req: AuthRequest, res: Response, next:
 
     try {
         // Verify token using the secret key
-        const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
+        const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as jwt.JwtPayload;
         req.user = decoded;  // Attach user information to the request object
         next();  // Proceed to the next middleware or route handler
     } catch (error: unknown) {
