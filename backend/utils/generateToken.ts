@@ -1,7 +1,13 @@
+import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { UserType } from '../types/user';
 
-const JWT_SECRET: string = process.env.JWT_SECRET || 'fallback_secret';
+dotenv.config();
+
+if (!process.env.ACCESS_TOKEN_SECRET) {
+  throw new Error('ACCESS_TOKEN_SECRET environment variable is not defined. Please set it before starting the application.');
+}
+const JWT_SECRET: string = process.env.ACCESS_TOKEN_SECRET;
 
 const generateToken = (user: UserType): string => {
   return jwt.sign(
