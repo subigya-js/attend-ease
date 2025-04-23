@@ -4,6 +4,8 @@ import express, { Request, Response } from "express";
 import connectDB from "./config/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
 
+import userRoute from "./routes/userRoute";
+
 dotenv.config();
 
 const app = express();
@@ -16,6 +18,9 @@ app.use(express.json());
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello World" });
 });
+
+// Routing for user authentication
+app.use("/api/user", userRoute);
 
 // Error Handler
 app.use(errorHandler);
