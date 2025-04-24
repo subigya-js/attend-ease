@@ -3,11 +3,17 @@
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { useAuth } from "../../../context/AuthController"
+import { useRouter } from 'next/navigation'
 // import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const { login, isLoggedIn } = useAuth()
+    const router = useRouter()
 
     const [loginData, setLoginData] = useState<{ email: string; password: string }>({
         email: "",
@@ -21,8 +27,6 @@ const Login = () => {
             [name]: value,
         }));
     };
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
 
     const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -31,25 +35,33 @@ const Login = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify(loginData),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            setError(data.message);
+        try {
+            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginData),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Login failed');
+            }
+            localStorage.setItem('token', data.token);
+            login!(data.token);
+            router.push('/dashboard');
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        } finally {
             setLoading(false);
-            return;
         }
-
-        localStorage.setItem("token", data.token);
-        console.log(data.message);
-        setLoading(false);
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push('/dashboard');
+        }
+    }, [isLoggedIn, router]);
 
     return (
         <div className="min-h-[90vh] flex justify-center items-center">
