@@ -1,19 +1,61 @@
 "use client"
 
-import React, { useState } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
+import Link from "next/link"
+import React, { useState } from "react"
 // import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    const [loginData, setLoginData] = useState<{ email: string; password: string }>({
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setLoginData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+    const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(loginData),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            setError(data.message);
+            setLoading(false);
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+        console.log(data.message);
+        setLoading(false);
+    };
+
     return (
         <div className="min-h-[90vh] flex justify-center items-center">
             <form
                 className="w-full max-w-md space-y-4 p-8 bg-white shadow-sm rounded-lg"
-            // onSubmit={loginSubmit}
+                onSubmit={loginSubmit}
             >
                 <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
                 <div>
@@ -30,10 +72,8 @@ const Login = () => {
                         className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="Enter your email"
-                        // value={loginData.email}
-                        // onChange={(e) =>
-                        //   setLoginData({ ...loginData, email: e.target.value })
-                        // }
+                        value={loginData.email}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -51,10 +91,8 @@ const Login = () => {
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                          focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pr-10"
                             placeholder="Enter your password"
-                            //   value={loginData.password}
-                            //   onChange={(e) =>
-                            //     setLoginData({ ...loginData, password: e.target.value })
-                            //   }
+                            value={loginData.password}
+                            onChange={handleChange}
                             required
                         />
                         <button
@@ -71,7 +109,7 @@ const Login = () => {
                     </div>
                 </div>
 
-                {/* {error && <div className="text-red-500">{error}</div>} */}
+                {error && <div className="text-red-500">{error}</div>}
 
                 <div className="flex flex-col gap-4 items-center justify-between">
 
@@ -83,9 +121,15 @@ const Login = () => {
                         Login with Google
                     </Button> */}
 
-                    <Button type="submit" className="w-full">
-                        {/* {loading ? "Loading..." : "Login"} */}
-                        Login
+                    <Button type="submit" className={`w-full ${loading ? "opacity-50 cursor-not-allowed" : ""}`}>
+                        {loading ? (
+                            <>
+                                <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                                Login
+                            </>
+                        ) : (
+                            "Login"
+                        )}
                     </Button>
 
                     <Link
