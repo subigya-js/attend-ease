@@ -8,6 +8,8 @@ const OrganizationSchema = new Schema<OrganizationType>(
         admins: [{ type: Schema.Types.ObjectId, ref: "User" }],
         members: [{ type: Schema.Types.ObjectId, ref: "User" }],
         holidays: [{ type: String }],
+        createdAt: { type: Date },
+        updatedAt: { type: Date },
     },
     { timestamps: true }
 );

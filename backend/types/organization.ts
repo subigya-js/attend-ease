@@ -6,4 +6,6 @@ export interface OrganizationType extends Document {
   admins: Types.ObjectId[];
   members: Types.ObjectId[];
   holidays: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
