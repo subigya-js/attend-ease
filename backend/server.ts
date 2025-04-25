@@ -4,8 +4,9 @@ import express, { Request, Response } from "express";
 import connectDB from "./config/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
 
-import userRoute from "./routes/userRoute";
+import validateToken from "./middleware/validateTokenHandler";
 import organizationRoute from "./routes/organizationRoute";
+import userRoute from "./routes/userRoute";
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/user", userRoute);
 
 // Routing for organization management
-app.use("/api/organization", organizationRoute);
+app.use("/api/organization", validateToken, organizationRoute);
 
 // Error Handler
 app.use(errorHandler);

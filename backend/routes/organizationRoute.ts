@@ -4,19 +4,20 @@ import {
     deleteOrganization,
     getOrganizationById,
     getOrganizations,
+    joinOrganization,
     manageOrganization,
-    updateOrganization
+    updateOrganization,
 } from "../controllers/organizationController";
-import validateToken from "../middleware/validateTokenHandler";
 
 const router = express.Router()
 
 router
-    .post('/create', validateToken, createOrganization)
-    .get('/organizations', validateToken, getOrganizations)
-    .get('/:organization_id', validateToken, getOrganizationById)
-    .put('/update/:organization_id', validateToken, updateOrganization)
-    .delete('/delete/:organization_id', validateToken, deleteOrganization)
-    .patch('/:organization_id/manage', validateToken, manageOrganization);
+    .post('/create', createOrganization)
+    .get('/organizations', getOrganizations)
+    .get('/:organization_id', getOrganizationById)
+    .put('/update/:organization_id', updateOrganization)
+    .delete('/delete/:organization_id', deleteOrganization)
+    .patch('/:organization_id/manage', manageOrganization)
+    .post('/join', joinOrganization);
 
 export default router;
