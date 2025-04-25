@@ -9,7 +9,7 @@ interface AuthRequest extends Request {
 }
 
 // @desc Create a new organization
-// @route POST /api/create/organization
+// @route POST /api/organization/create
 // @access Private
 const createOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
     const { name, orgId } = req.body;
@@ -46,7 +46,7 @@ const createOrganization = asyncHandler(async (req: AuthRequest, res: Response) 
 })
 
 // @desc Get all organizations
-// @route GET /api/get/organizations
+// @route GET /api/organizations
 // @access Private
 const getOrganizations = asyncHandler(async (req: AuthRequest, res: Response) => {
     const organizations = await Organization.find({
@@ -67,7 +67,7 @@ const getOrganizations = asyncHandler(async (req: AuthRequest, res: Response) =>
 })
 
 // @desc Get organization by ID
-// @route GET /api/get/organization/:organization_id
+// @route GET /api/organizations/:organization_id
 // @access Private
 const getOrganizationById = asyncHandler(async (req: AuthRequest, res: Response) => {
     const { organization_id } = req.params;
@@ -83,7 +83,7 @@ const getOrganizationById = asyncHandler(async (req: AuthRequest, res: Response)
     }
 })
 // @desc Update organization
-// @route PUT /api/update/organization/:organization_id
+// @route PUT /api/organization/update/:organization_id
 // @access Private
 const updateOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
     const { organization_id } = req.params;
@@ -113,7 +113,7 @@ const updateOrganization = asyncHandler(async (req: AuthRequest, res: Response) 
 });
 
 // @desc Delete Organization
-// @route DELETE /api/delete/organization/:organization_id
+// @route DELETE /api/organization/delete/:organization_id
 // @access Private
 const deleteOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
     const { organization_id } = req.params;
@@ -177,5 +177,5 @@ export {
     getOrganizationById,
     updateOrganization,
     deleteOrganization,
-    manageOrganization
+    manageOrganization,
 }

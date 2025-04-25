@@ -5,6 +5,7 @@ import connectDB from "./config/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
 
 import userRoute from "./routes/userRoute";
+import organizationRoute from "./routes/organizationRoute";
 
 dotenv.config();
 
@@ -21,6 +22,9 @@ app.get("/", (req: Request, res: Response) => {
 
 // Routing for user authentication
 app.use("/api/user", userRoute);
+
+// Routing for organization management
+app.use("/api/organization", organizationRoute);
 
 // Error Handler
 app.use(errorHandler);
