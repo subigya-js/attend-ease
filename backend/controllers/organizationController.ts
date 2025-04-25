@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { OrganizationType } from '../types/organization';
-import Organization from '../models/organizationModel';
 import { JwtPayload } from 'jsonwebtoken';
+import Organization from '../models/organizationModel';
 
 interface AuthRequest extends Request {
     user?: JwtPayload;
@@ -65,6 +64,39 @@ const getOrganizations = asyncHandler(async (req: AuthRequest, res: Response) =>
         throw new Error('No organizations found');
     }
 })
+
+// @desc Join an organization
+// @route POST /api/organization/join
+// @access Private
+const joinOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const { organizationId } = req.body;
+
+    if (!organizationId) {
+        res.status(400);
+        throw new Error('Organization ID is required');
+    }
+
+    const organization = await Organization.findOne({ orgId: organizationId });
+    if (!organization) {
+        res.status(404);
+        throw new Error('Organization not found');
+    }
+
+    if (organization.members.includes(req.user?.id)) {
+        res.status(400);
+        throw new Error('Already a member of this organization');
+    }
+
+    organization.members.push(req.user?.id);
+    await organization.save();
+
+    res.status(200).json({
+        message: 'Successfully joined the organization',
+        organization_id: organization._id,
+        name: organization.name,
+        orgId: organization.orgId,
+    });
+});
 
 // @desc Get organization by ID
 // @route GET /api/organizations/:organization_id
@@ -172,10 +204,5 @@ const manageOrganization = asyncHandler(async (req: AuthRequest, res: Response) 
 });
 
 export {
-    createOrganization,
-    getOrganizations,
-    getOrganizationById,
-    updateOrganization,
-    deleteOrganization,
-    manageOrganization,
-}
+    createOrganization, deleteOrganization, getOrganizationById, getOrganizations, joinOrganization, manageOrganization, updateOrganization
+};
