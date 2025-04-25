@@ -111,3 +111,71 @@ const updateOrganization = asyncHandler(async (req: AuthRequest, res: Response) 
         throw new Error('Not authorized to update this organization');
     }
 });
+
+// @desc Delete Organization
+// @route DELETE /api/delete/organization/:organization_id
+// @access Private
+const deleteOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const { organization_id } = req.params;
+
+    const organization = await Organization.findById(organization_id);
+
+    if (!organization) {
+        res.status(404);
+        throw new Error('Organization not found');
+    }
+
+    if (!organization.admins.includes(req.user?.id)) {
+        res.status(403);
+        throw new Error('Not authorized to delete this organization');
+    }
+
+    await Organization.findByIdAndDelete(organization_id);
+
+    res.status(200).json({ message: 'Organization deleted successfully' });
+});
+
+// @desc Add or remove admins and remove members
+// @route PATCH /api/organization/:organization_id/manage
+// @access Private
+const manageOrganization = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const organization_id = req.params.organization_id;
+    const { addAdmin = [], removeAdmin = [], removeMember = [] } = req.body;
+    const organization = await Organization.findById(organization_id);
+    if (!organization) {
+        res.status(404);
+        throw new Error('Organization not found');
+    }
+    if (!organization.admins.includes(req.user?.id)) {
+        res.status(403);
+        throw new Error('Only admins can manage the organization');
+    }
+
+    // add admin
+    if (addAdmin.length > 0) {
+        organization.admins.push(...addAdmin);
+    }
+    // remove admin
+    if (removeAdmin.length > 0) {
+        organization.admins = organization.admins.filter(
+            (admin) => !removeAdmin.includes(admin.toString())
+        );
+    }
+    // remove member
+    if (removeMember.length > 0) {
+        organization.members = organization.members.filter(
+            (member) => !removeMember.includes(member.toString())
+        );
+    }
+    const updatedOrganization = await organization.save();
+    res.status(200).json(updatedOrganization);
+});
+
+export {
+    createOrganization,
+    getOrganizations,
+    getOrganizationById,
+    updateOrganization,
+    deleteOrganization,
+    manageOrganization
+}
