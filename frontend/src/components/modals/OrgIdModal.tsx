@@ -8,6 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
+import createOrganization from "@/apis/createOrganization";
+import joinOrganization from "@/apis/joinOrganization";
 
 interface OrgIdModalProps {
   isOpen: boolean;
@@ -21,62 +23,6 @@ const OrgIdModal: React.FC<OrgIdModalProps> = ({ isOpen, onClose, onSubmit }) =>
   const [orgName, setOrgName] = useState('');
   const [activeTab, setActiveTab] = useState<'join' | 'create'>('join');
   const [error, setError] = useState<string | null>(null);
-
-  const createOrganization = async (name: string, orgId: string) => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      throw new Error('No authentication token found')
-    }
-    try {
-      const response = await fetch('http://localhost:3001/api/organization/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name, orgId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to create organization');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error creating organization:', error);
-      throw error;
-    }
-  };
-
-  const joinOrganization = async (organizationId: string) => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      throw new Error('No authentication token found')
-    }
-    try {
-      const response = await fetch('http://localhost:3001/api/organization/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ organizationId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to join organization');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error joining organization:', error);
-      throw error;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
