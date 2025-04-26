@@ -59,7 +59,7 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            router.push('/dashboard');
+            router.push('/organizations');
         }
     }, [isLoggedIn, router]);
 
