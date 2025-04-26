@@ -36,6 +36,8 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
 
           <div className='flex flex-col text-sm justify-between'>
             {updatedAt && <p>Last Updated: {new Date(updatedAt).toLocaleDateString()}</p>}
+            <div className='flex justify-between'>
+            </div>
           </div>
         </div>
         <div className="flex justify-between mt-4">

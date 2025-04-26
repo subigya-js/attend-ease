@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface OrgIdModalProps {
   isOpen: boolean;
@@ -20,18 +20,87 @@ const OrgIdModal: React.FC<OrgIdModalProps> = ({ isOpen, onClose, onSubmit }) =>
   const [createOrgId, setCreateOrgId] = useState('');
   const [orgName, setOrgName] = useState('');
   const [activeTab, setActiveTab] = useState<'join' | 'create'>('join');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (activeTab === 'join') {
-      onSubmit(joinOrgId);
-    } else {
-      onSubmit(createOrgId, orgName);
+  const createOrganization = async (name: string, orgId: string) => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      throw new Error('No authentication token found')
     }
-    setJoinOrgId('');
-    setCreateOrgId('');
-    setOrgName('');
-    onClose();
+    try {
+      const response = await fetch('http://localhost:3001/api/organization/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, orgId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create organization');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error creating organization:', error);
+      throw error;
+    }
+  };
+
+  const joinOrganization = async (organizationId: string) => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      throw new Error('No authentication token found')
+    }
+    try {
+      const response = await fetch('http://localhost:3001/api/organization/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ organizationId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to join organization');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error joining organization:', error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      if (activeTab === 'join') {
+        await joinOrganization(joinOrgId);
+        onSubmit(joinOrgId);
+      } else {
+        await createOrganization(orgName, createOrgId);
+        onSubmit(createOrgId, orgName);
+      }
+      setJoinOrgId('');
+      setCreateOrgId('');
+      setOrgName('');
+      onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred. Please try again.');
+      }
+    }
   };
 
   return (
@@ -39,21 +108,19 @@ const OrgIdModal: React.FC<OrgIdModalProps> = ({ isOpen, onClose, onSubmit }) =>
       <DialogContent className="sm:max-w-[425px]">
         <div className="flex mb-4 border-b">
           <button
-            className={`flex-1 py-2 px-4 text-center ${
-              activeTab === 'join'
-                ? 'text-black border-b-2 border-black font-semibold cursor-pointer'
-                : 'text-gray-500'
-            }`}
+            className={`flex-1 py-2 px-4 text-center ${activeTab === 'join'
+              ? 'text-black border-b-2 border-black font-semibold cursor-pointer'
+              : 'text-gray-500'
+              }`}
             onClick={() => setActiveTab('join')}
           >
             Join Organization
           </button>
           <button
-            className={`flex-1 py-2 px-4 text-center ${
-              activeTab === 'create'
-                ? 'text-black border-b-2 border-black font-semibold cursor-pointer'
-                : 'text-gray-500'
-            }`}
+            className={`flex-1 py-2 px-4 text-center ${activeTab === 'create'
+              ? 'text-black border-b-2 border-black font-semibold cursor-pointer'
+              : 'text-gray-500'
+              }`}
             onClick={() => setActiveTab('create')}
           >
             Create Organization
@@ -120,6 +187,7 @@ const OrgIdModal: React.FC<OrgIdModalProps> = ({ isOpen, onClose, onSubmit }) =>
               </>
             )}
           </div>
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <DialogFooter>
             <Button type="submit">
               {activeTab === 'join' ? 'Join' : 'Create'}
