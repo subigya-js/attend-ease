@@ -1,10 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useAuth } from '../../../context/AuthController'
+import Spinner from '@/components/common/Spinner'
 
 interface UserData {
   user_id: string;
@@ -69,7 +69,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Spinner />
       </div>
     )
   }

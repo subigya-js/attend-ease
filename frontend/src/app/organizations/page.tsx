@@ -2,9 +2,9 @@
 
 import getOrganizations from '@/apis/getOrganizations'
 import EmptyScreen from '@/components/common/EmptyScreen'
+import Spinner from '@/components/common/Spinner'
 import OrganizationCard from '@/components/organizations/OrganizationCard'
 import OrganizationType from '@/types/organizationType'
-import { Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 const OrganizationsPage = () => {
@@ -28,7 +28,7 @@ const OrganizationsPage = () => {
     }, [])
 
     if (isLoading) {
-        return <div className='h-[90vh] flex justify-center items-center'><Loader className="animate-spin text-primary"/></div>
+        return <div className='h-[90vh] flex justify-center items-center'><Spinner /></div>
     }
 
     if (error) {

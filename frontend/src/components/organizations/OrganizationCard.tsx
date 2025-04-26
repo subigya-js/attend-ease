@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '../ui/button';
 
 interface OrganizationCardProps {
   name: string;
@@ -10,21 +11,36 @@ interface OrganizationCardProps {
   updatedAt?: Date;
 }
 
-const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, adminCount, memberCount, createdAt, updatedAt }) => {
+const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, updatedAt }) => {
   return (
-    <Card>
+    <Card className='w-[80%] cursor-pointer shadow-lg hover:bg-gray-100/50 duration-200 relative' onClick={() => console.log('Card clicked')}>
+      {/* Edit Button Top Right */}
+      <Button
+        variant="outline"
+        className="absolute top-4 right-4 px-4 py-2 rounded z-10"
+        onClick={(e) => {
+          e.stopPropagation(); // prevents card click event
+          console.log('Edit clicked');
+        }}
+      >
+        Edit
+      </Button>
+
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle className='font-bold'>{name}</CardTitle>
       </CardHeader>
+
       <CardContent>
-        <p>Organization ID: {orgId}</p>
-        {adminCount !== undefined && <p>Admins: {adminCount}</p>}
-        {memberCount !== undefined && <p>Members: {memberCount}</p>}
-        {createdAt && <p>Created At: {new Date(createdAt).toLocaleDateString()}</p>}
-        {updatedAt && <p>Updated At: {new Date(updatedAt).toLocaleDateString()}</p>}
+        <div className='flex flex-col gap-4'>
+          <p className='text-sm italic'>Organization ID: {orgId}</p>
+
+          <div className='flex flex-col text-sm justify-between'>
+            {updatedAt && <p>Last Updated: {new Date(updatedAt).toLocaleDateString()}</p>}
+          </div>
+        </div>
         <div className="flex justify-between mt-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">View</button>
-          <button className="bg-gray-500 text-white px-4 py-2 rounded">Edit</button>
+          <Button className="p-2 rounded">Enter Organization</Button>
+          <Button className="p-2 rounded">View Details</Button>
         </div>
       </CardContent>
     </Card>

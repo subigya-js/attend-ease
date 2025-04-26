@@ -11,13 +11,13 @@ export default function Home() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push('/dashboard');
+      router.push('/organizations');
     }
   }, [isLoggedIn, router]);
 
   const handleGetStarted = () => {
     if (isLoggedIn) {
-      router.push('/dashboard');
+      router.push('/organizations');
     } else {
       router.push('/login');
     }
