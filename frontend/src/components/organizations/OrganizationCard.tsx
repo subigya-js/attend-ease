@@ -1,17 +1,28 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 interface OrganizationCardProps {
   name: string;
   orgId: string;
   adminCount?: number;
   memberCount?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
 
 const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, updatedAt }) => {
+  const formatDate = (date: string | Date | undefined) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString();
+  };
+  const router = useRouter();
+
+  const viewOrganization = () => {
+    router.push(`/organizations/${orgId}`);
+  }
+
   return (
     <Card className='w-[80%] cursor-pointer shadow-lg hover:bg-gray-100/50 duration-200 relative' onClick={() => console.log('Card clicked')}>
       {/* Edit Button Top Right */}
@@ -35,14 +46,14 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
           <p className='text-sm italic'>Organization ID: {orgId}</p>
 
           <div className='flex flex-col text-sm justify-between'>
-            {updatedAt && <p>Last Updated: {new Date(updatedAt).toLocaleDateString()}</p>}
+            {updatedAt && <p>Last Updated: {formatDate(updatedAt)}</p>}
             <div className='flex justify-between'>
             </div>
           </div>
         </div>
         <div className="flex justify-between mt-4">
           <Button className="p-2 rounded">Enter Organization</Button>
-          <Button className="p-2 rounded">View Details</Button>
+          <Button className="p-2 rounded" onClick={viewOrganization}>View Details</Button>
         </div>
       </CardContent>
     </Card>
