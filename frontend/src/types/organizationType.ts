@@ -5,6 +5,6 @@ export default interface OrganizationType {
     orgId: string;
     admins?: Array<{ _id: string; name: string; email: string }>;
     members?: Array<{ _id: string; name: string; email: string }>;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 }
