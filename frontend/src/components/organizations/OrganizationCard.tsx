@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 interface OrganizationCardProps {
   name: string;
@@ -12,6 +13,12 @@ interface OrganizationCardProps {
 }
 
 const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, updatedAt }) => {
+  const router = useRouter();
+
+  const viewOrganization = () => {
+    router.push(`/organizations/${orgId}`);
+  }
+
   return (
     <Card className='w-[80%] cursor-pointer shadow-lg hover:bg-gray-100/50 duration-200 relative' onClick={() => console.log('Card clicked')}>
       {/* Edit Button Top Right */}
@@ -42,7 +49,7 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
         </div>
         <div className="flex justify-between mt-4">
           <Button className="p-2 rounded">Enter Organization</Button>
-          <Button className="p-2 rounded">View Details</Button>
+          <Button className="p-2 rounded" onClick={viewOrganization}>View Details</Button>
         </div>
       </CardContent>
     </Card>

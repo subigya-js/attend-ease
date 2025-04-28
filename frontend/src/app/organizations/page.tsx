@@ -63,7 +63,7 @@ const OrganizationsPage = () => {
     }
 
     if (error) {
-        return <div className="text-red-500">{error}</div>
+        return <div className="h-[90vh] flex justify-center items-center text-red-500">{error}</div>
     }
 
     if (organizations.length === 0) {

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import Organization from '../models/organizationModel';
+import { findOrganizationByIdentifier } from '../utils/findOrganization';
 
 interface AuthRequest extends Request {
     user?: JwtPayload;
@@ -98,22 +100,34 @@ const joinOrganization = asyncHandler(async (req: AuthRequest, res: Response) =>
     });
 });
 
-// @desc Get organization by ID
-// @route GET /api/organizations/:organization_id
+// @desc Get Organization by ID or orgId
+// @route GET /api/organization/:identifier
 // @access Private
-const getOrganizationById = asyncHandler(async (req: AuthRequest, res: Response) => {
-    const { organization_id } = req.params;
-    const organization = await Organization.findById(organization_id)
-        .populate('admins', 'name email')
-        .populate('members', 'name email');
-    if (organization) {
-        res.status(200).json(organization);
+const getOrganizationByIdentifier = asyncHandler(async (req: Request, res: Response) => {
+    const { identifier } = req.params;
+
+    let organization;
+
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+        // If identifier is a valid MongoDB ObjectId
+        organization = await Organization.findById(identifier)
+            .populate('admins', 'name email')
+            .populate('members', 'name email');
+    } else {
+        // Otherwise search by orgId
+        organization = await Organization.findOne({ orgId: identifier })
+            .populate('admins', 'name email')
+            .populate('members', 'name email');
     }
-    else {
+
+    if (!organization) {
         res.status(404);
         throw new Error('Organization not found');
     }
-})
+
+    res.status(200).json(organization);
+});
+
 // @desc Update organization
 // @route PUT /api/organization/update/:organization_id
 // @access Private
@@ -204,5 +218,5 @@ const manageOrganization = asyncHandler(async (req: AuthRequest, res: Response) 
 });
 
 export {
-    createOrganization, deleteOrganization, getOrganizationById, getOrganizations, joinOrganization, manageOrganization, updateOrganization
+    createOrganization, deleteOrganization, getOrganizationByIdentifier, getOrganizations, joinOrganization, manageOrganization, updateOrganization
 };
