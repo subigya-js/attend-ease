@@ -19,7 +19,7 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
   };
   const router = useRouter();
 
-  const viewOrganization = () => {
+  const enterOrganization = () => {
     router.push(`/organizations/${orgId}`);
   }
 
@@ -52,8 +52,7 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
           </div>
         </div>
         <div className="flex justify-between mt-4">
-          <Button className="p-2 rounded">Enter Organization</Button>
-          <Button className="p-2 rounded" onClick={viewOrganization}>View Details</Button>
+          <Button className="p-2 rounded" onClick={enterOrganization}>Enter Organization</Button>
         </div>
       </CardContent>
     </Card>
