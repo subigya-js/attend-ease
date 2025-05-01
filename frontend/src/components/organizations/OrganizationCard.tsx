@@ -24,7 +24,7 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
   }
 
   return (
-    <Card className='w-[80%] cursor-pointer shadow-lg hover:bg-gray-100/50 duration-200 relative' onClick={() => console.log('Card clicked')}>
+    <Card className='w-[80%] cursor-pointer shadow-lg hover:bg-gray-100/50 duration-200 relative' onClick={enterOrganization}>
       {/* Edit Button Top Right */}
       <Button
         variant="outline"
@@ -52,7 +52,6 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({ name, orgId, update
           </div>
         </div>
         <div className="flex justify-between mt-4">
-          <Button className="p-2 rounded" onClick={enterOrganization}>Enter Organization</Button>
         </div>
       </CardContent>
     </Card>
