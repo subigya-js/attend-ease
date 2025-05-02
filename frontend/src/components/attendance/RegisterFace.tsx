@@ -49,7 +49,7 @@ const RegisterFace = () => {
     };
 
     return (
-        <div className="p-4 border rounded">
+        <div className="p-4  rounded flex flex-col justify-center items-center">
             <input
                 placeholder="Enter your name"
                 value={name}
@@ -57,12 +57,12 @@ const RegisterFace = () => {
                 className="border p-1 mr-2"
             />
             <div className="my-2">
-                <video ref={videoRef} width="300" height="200" autoPlay muted />
+                <video ref={videoRef} width="500" height="300" autoPlay muted className='rounded-md'/>
                 <canvas ref={canvasRef} width="300" height="200" className="hidden" />
             </div>
             <button
                 onClick={handleCapture}
-                className="bg-blue-500 text-white px-3 py-1 rounded"
+                className="bg-primary cursor-pointer text-white px-3 py-1 rounded"
             >
                 Capture & Register
             </button>
